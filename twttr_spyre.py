@@ -9,6 +9,11 @@ from requests_oauthlib import OAuth1
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+ACCTOK = ENV['ACCTOK']
+ACCTOKSEC = ENV['ACCTOKSEC']
+CONKEY = ENV['CONKEY']
+CONSEC = ENV['CONSEC']
+
 class TwitterExample(server.App):
     title = "Sentiment Analysis - Tweets"
 
@@ -38,11 +43,11 @@ class TwitterExample(server.App):
 
     def twitterAPI(self,params):
         # set up twitter api config to get timeline information
-        config = cnfg.load(".twitter_config") # file with consumer keys and access tokens
-        auth = tweepy.OAuthHandler(config["consumer_key"],
-                           config["consumer_secret"])
-        auth.set_access_token(config["access_token"],
-                      config["access_token_secret"])
+        #config = cnfg.load(".twitter_config") # file with consumer keys and access tokens
+        auth = tweepy.OAuthHandler(CONKEY,
+                                   CONSEC)
+        auth.set_access_token(ACCTOK,
+                              ACCTOKSEC])
         return tweepy.API(auth)
         
     def getData(self, params):
