@@ -5,5 +5,4 @@ oauthlib==1.0.1
 seaborn==0.6.0
 textblob==0.9.1
 DataSpyre==0.2.0
-pandas==0.16.1
 
