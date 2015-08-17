@@ -4,7 +4,7 @@ import pandas as pd
 import tweepy
 from textblob import TextBlob
 import os
-import seaborn as sns
+
 # commented out by Aaron!
 # import matplotlib.pyplot as plt
 # import json
@@ -74,6 +74,7 @@ class TwitterExample(server.App):
         self.handle = api.get_user(username).name
         df = pd.DataFrame([date,pol,subj,text]).transpose()
         df.columns = ['date','pol','subj','text']
+        df = df.reindex(index=df.index[::-1])
         return df
 
     def getPlot(self, params):
@@ -82,6 +83,7 @@ class TwitterExample(server.App):
         plt_obj.set_ylabel("Sentiment")
         plt_obj.set_title(self.handle)
         fig = plt_obj.get_figure()
+        fig.autofmt_xdate()
         return fig
 
 if __name__ == '__main__':
