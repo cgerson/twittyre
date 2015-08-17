@@ -4,6 +4,8 @@ import pandas as pd
 import tweepy
 from textblob import TextBlob
 import os
+import matplotlib
+matplotlib.style.use('ggplot')
 
 # commented out by Aaron!
 # import matplotlib.pyplot as plt
