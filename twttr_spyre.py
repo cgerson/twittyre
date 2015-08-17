@@ -4,6 +4,7 @@ import pandas as pd
 import tweepy
 from textblob import TextBlob
 import os
+import seaborn as sns
 # commented out by Aaron!
 # import matplotlib.pyplot as plt
 # import json
@@ -26,7 +27,6 @@ class TwitterExample(server.App):
                     "label": 'user', 
                     "options" : [ {"label": "Donald Trump", "value":"realDonaldTrump"},
                                   {"label": "Aaron Schumacher", "value":"planarrowspace"},
-                                  {"label": "Iliad", "value":"iliadlive"},
                                   {"label": "Chicken Deli", "value":"go_chicken_deli"}],
                     "key": 'username', 
                     "action_id": "update_data"}]
@@ -63,16 +63,17 @@ class TwitterExample(server.App):
         date = []
         pol = []
         subj = []
-        followers = []
+        text = []
         for tweet in result:
             fav.append(tweet.favorite_count)
             date.append(tweet.created_at)
             pol.append(TextBlob(tweet.text).sentiment[0])
             subj.append(TextBlob(tweet.text).sentiment[1])
+            text.append(tweet.text)
 
         self.handle = api.get_user(username).name
-        df = pd.DataFrame([date,pol,subj]).transpose()
-        df.columns = ['date','pol','subj']
+        df = pd.DataFrame([date,pol,subj,text]).transpose()
+        df.columns = ['date','pol','subj','text']
         return df
 
     def getPlot(self, params):
