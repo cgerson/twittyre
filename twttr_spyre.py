@@ -1,18 +1,23 @@
 from spyre import server
 
 import pandas as pd
-import json
 import tweepy
-import cnfg
 from textblob import TextBlob
-from requests_oauthlib import OAuth1
-import matplotlib.pyplot as plt
-import seaborn as sns
+import os
+# commented out by Aaron!
+# import matplotlib.pyplot as plt
+# import json
+# from requests_oauthlib import OAuth1
 
-ACCTOK = ENV['ACCTOK']
-ACCTOKSEC = ENV['ACCTOKSEC']
-CONKEY = ENV['CONKEY']
-CONSEC = ENV['CONSEC']
+
+ACCTOK = os.environ.get('ACCTOK')
+ACCTOKSEC = os.environ.get('ACCTOKSEC')
+CONKEY = os.environ.get('CONKEY')
+CONSEC = os.environ.get('CONSEC')
+# ACCTOK = ENV['ACCTOK']
+# ACCTOKSEC = ENV['ACCTOKSEC']
+# CONKEY = ENV['CONKEY']
+# CONSEC = ENV['CONSEC']
 
 class TwitterExample(server.App):
     title = "Sentiment Analysis - Tweets"
@@ -44,10 +49,8 @@ class TwitterExample(server.App):
     def twitterAPI(self,params):
         # set up twitter api config to get timeline information
         #config = cnfg.load(".twitter_config") # file with consumer keys and access tokens
-        auth = tweepy.OAuthHandler(CONKEY,
-                                   CONSEC)
-        auth.set_access_token(ACCTOK,
-                              ACCTOKSEC])
+        auth = tweepy.OAuthHandler(CONKEY,CONSEC)
+        auth.set_access_token(ACCTOK,ACCTOKSEC)
         return tweepy.API(auth)
         
     def getData(self, params):
@@ -82,4 +85,5 @@ class TwitterExample(server.App):
 
 if __name__ == '__main__':
     app = TwitterExample()
-    app.launch(port=8000)
+    app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
+    # app.launch(port=8000)

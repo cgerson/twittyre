@@ -1,8 +1,3 @@
 tweepy==3.3.0
-cnfg==1.0.0
-matplotlib==1.4.3
-oauthlib==1.0.1
-seaborn==0.6.0
 textblob==0.9.1
 DataSpyre==0.2.0
-
