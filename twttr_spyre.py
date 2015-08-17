@@ -78,7 +78,7 @@ class TwitterExample(server.App):
 
     def getPlot(self, params):
         df = self.getData(params).set_index('date')
-        plt_obj = df.plot(kind='bar')
+        plt_obj = df[['pol','subj']].plot(kind='bar')
         plt_obj.set_ylabel("Sentiment")
         plt_obj.set_title(self.handle)
         fig = plt_obj.get_figure()
