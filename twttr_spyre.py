@@ -33,7 +33,7 @@ class TwitterExample(server.App):
                     "action_id": "update_data"},
               { "type":'text',
                     "label": 'number of past tweets',
-                "value": "10",
+                "value": 10,
                     "key": 'tweet_number', 
                     "action_id": "update_data"}]
 
@@ -63,7 +63,8 @@ class TwitterExample(server.App):
         api = self.twitterAPI(params)
         
         username = params['username']
-        if params['tweet_number'] > 30:
+        
+        if int(params['tweet_number']) > 30:
             number = 30
         else:
             number = params['tweet_number']
@@ -99,7 +100,6 @@ class TwitterExample(server.App):
         return df
 
     def getPlot(self, params):
-        number = params['tweet_number']
         df = self.getData(params).set_index('date')
         plt_obj = df[['polarity','subjectivity']].plot(kind='bar')
         plt_obj.set_ylabel("Sentiment")
