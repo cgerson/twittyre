@@ -63,11 +63,11 @@ class TwitterExample(server.App):
         api = self.twitterAPI(params)
         
         username = params['username']
-        number = params['tweet_number']
+        if params['tweet_number'] > 30:
+            number = 30
+        else:
+            number = params['tweet_number']
 
-        if number > 50:
-            number = 50
-        
         # in the case that handle doesn't exist
         try:
             result = api.user_timeline(username, include_rts=1, count = number)
