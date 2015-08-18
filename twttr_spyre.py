@@ -40,7 +40,7 @@ class TwitterExample(server.App):
     controls = [{   "type" : "hidden",
                     "id" : "update_data"}]
 
-    tabs = ["Plot", "Table"]
+    tabs = ["Plot", "Table","About"]
 
     outputs = [{ "type" : "plot",
                     "id" : "plot",
@@ -50,7 +50,11 @@ class TwitterExample(server.App):
                     "id" : "table_id",
                     "control_id" : "update_data",
                     "tab" : "Table",
-                    "on_page_load" : True }]
+                    "on_page_load" : True },
+               { "type" : "html",
+                    "id" : "simple_html_output",
+                    "control_id" : "update_data",
+                    "tab" : "About"}]
 
     def twitterAPI(self,params):
         # set up twitter api config to get timeline information
@@ -95,12 +99,12 @@ class TwitterExample(server.App):
 
         self.handle = api.get_user(username).name
         df = pd.DataFrame([date,pol,subj,text]).transpose()
-        df.columns = ['date','polarity','subjectivity','tweet']
+        df.columns = ['Date','polarity','subjectivity','tweet']
         df = df.reindex(index=df.index[::-1])
         return df
 
     def getPlot(self, params):
-        df = self.getData(params).set_index('date')
+        df = self.getData(params).set_index('Date')
         plt_obj = df[['polarity','subjectivity']].plot(kind='bar')
         plt_obj.set_ylabel("Sentiment")
         plt_obj.set_title("{0} Sentiment".format(self.handle),fontname='Helvetica')
@@ -108,6 +112,9 @@ class TwitterExample(server.App):
         fig.autofmt_xdate()
         return fig
 
+    def getHTML(self,params):
+        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html'>Text Blob</a>.</pre>" 
+        
 if __name__ == '__main__':
     app = TwitterExample()
     app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
