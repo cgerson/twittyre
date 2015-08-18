@@ -5,6 +5,7 @@ import tweepy
 from textblob import TextBlob
 import os
 import matplotlib
+import matplotlib.dates as mdates
 matplotlib.style.use('ggplot')
 
 # commented out by Aaron!
@@ -25,12 +26,15 @@ CONSEC = os.environ.get('CONSEC')
 class TwitterExample(server.App):
     title = "Sentiment Analysis - Tweets"
 
-    inputs = [{     "type":'dropdown',
-                    "label": 'user', 
-                    "options" : [ {"label": "Donald Trump", "value":"realDonaldTrump"},
-                                  {"label": "Aaron Schumacher", "value":"planarrowspace"},
-                                  {"label": "Chicken Deli", "value":"go_chicken_deli"}],
+    inputs = [{     "type":'text',
+                    "label": 'twitter handle', 
+                    "value":'go_chicken_deli',
                     "key": 'username', 
+                    "action_id": "update_data"},
+              { "type":'text',
+                    "label": 'number of past tweets',
+                "value": "10",
+                    "key": 'tweet_number', 
                     "action_id": "update_data"}]
 
     controls = [{   "type" : "hidden",
@@ -59,7 +63,22 @@ class TwitterExample(server.App):
         api = self.twitterAPI(params)
         
         username = params['username']
-        result = api.user_timeline(username, include_rts=1, count = 20)
+        number = params['tweet_number']
+
+        if number > 50:
+            number = 50
+        
+        # in the case that handle doesn't exist
+        try:
+            result = api.user_timeline(username, include_rts=1, count = number)
+        except:
+            username = "go_chicken_deli"
+            result = api.user_timeline(username, include_rts=1, count = number)
+
+        # in the case that handle doesn't return any tweets
+        if result==[]:
+            username = "go_chicken_deli"
+            result = api.user_timeline(username, include_rts=1, count = number)
 
         fav = []
         date = []
@@ -75,15 +94,16 @@ class TwitterExample(server.App):
 
         self.handle = api.get_user(username).name
         df = pd.DataFrame([date,pol,subj,text]).transpose()
-        df.columns = ['date','pol','subj','text']
+        df.columns = ['date','polarity','subjectivity','tweet']
         df = df.reindex(index=df.index[::-1])
         return df
 
     def getPlot(self, params):
+        number = params['tweet_number']
         df = self.getData(params).set_index('date')
-        plt_obj = df[['pol','subj']].plot(kind='bar')
+        plt_obj = df[['polarity','subjectivity']].plot(kind='bar')
         plt_obj.set_ylabel("Sentiment")
-        plt_obj.set_title(self.handle)
+        plt_obj.set_title("{0} Sentiment".format(self.handle),fontname='Helvetica')
         fig = plt_obj.get_figure()
         fig.autofmt_xdate()
         return fig
