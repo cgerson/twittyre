@@ -35,6 +35,12 @@ class TwitterExample(server.App):
                     "label": 'number of past tweets',
                 "value": 10,
                     "key": 'tweet_number', 
+                    "action_id": "update_data"},
+              { "type":'dropdown',
+                "label":'include retweets',
+                    "options" : [{"label": "no", "value":False},
+                                 {"label": "yes", "value":True}],
+                    "key": 'retweets', 
                     "action_id": "update_data"}]
 
     controls = [{   "type" : "hidden",
@@ -58,14 +64,13 @@ class TwitterExample(server.App):
 
     def twitterAPI(self,params):
         # set up twitter api config to get timeline information
-        #config = cnfg.load(".twitter_config") # file with consumer keys and access tokens
         auth = tweepy.OAuthHandler(CONKEY,CONSEC)
         auth.set_access_token(ACCTOK,ACCTOKSEC)
         return tweepy.API(auth)
         
     def getData(self, params):
         api = self.twitterAPI(params)
-        
+        rt = params['retweets']
         username = params['username']
         
         if int(params['tweet_number']) > 30:
@@ -75,15 +80,15 @@ class TwitterExample(server.App):
 
         # in the case that handle doesn't exist
         try:
-            result = api.user_timeline(username, include_rts=1, count = number)
+            result = api.user_timeline(username, include_rts=rt, count = number)
         except:
             username = "go_chicken_deli"
-            result = api.user_timeline(username, include_rts=1, count = number)
+            result = api.user_timeline(username, include_rts=rt, count = number)
 
         # in the case that handle doesn't return any tweets
         if result==[]:
             username = "go_chicken_deli"
-            result = api.user_timeline(username, include_rts=1, count = number)
+            result = api.user_timeline(username, include_rts=rt, count = number)
 
         fav = []
         date = []
@@ -113,10 +118,10 @@ class TwitterExample(server.App):
         return fig
 
     def getHTML(self,params):
-        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html'>TextBlob</a>.</pre>" 
+        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html' target='_blank'>TextBlob</a>.</pre>" 
         
 if __name__ == '__main__':
     app = TwitterExample()
-    pd.set_option('display.max_colwidth', -1)
+    pd.set_option('display.max_colwidth', -1) #displays full tweet text
     app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
     # app.launch(port=8000)
