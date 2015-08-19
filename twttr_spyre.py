@@ -113,9 +113,10 @@ class TwitterExample(server.App):
         return fig
 
     def getHTML(self,params):
-        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html'>Text Blob</a>.</pre>" 
+        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html'>TextBlob</a>.</pre>" 
         
 if __name__ == '__main__':
     app = TwitterExample()
+    pd.set_option('display.max_colwidth', -1)
     app.launch(host='0.0.0.0', port=int(os.environ.get('PORT', '5000')))
     # app.launch(port=8000)
