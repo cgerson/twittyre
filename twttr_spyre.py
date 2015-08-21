@@ -110,8 +110,8 @@ class TwitterExample(server.App):
 
     def getPlot(self, params):
         df = self.getData(params).set_index('Date')
-        plt_obj = df[['polarity','subjectivity']].plot(kind='bar')
-        plt_obj.set_ylabel("Sentiment")
+        plt_obj = df[['polarity','subjectivity']].plot(kind='bar',ylim=(-1.0,1.0))
+        plt_obj.set_ylabel("Sentiment (measured between -1.0 & 1.0)")
         plt_obj.set_title("{0} Sentiment".format(self.handle),fontname='Helvetica')
         fig = plt_obj.get_figure()
         fig.autofmt_xdate()
