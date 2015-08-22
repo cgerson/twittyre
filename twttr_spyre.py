@@ -5,8 +5,7 @@ import tweepy
 from textblob import TextBlob
 import os
 import matplotlib
-import matplotlib.dates as mdates
-matplotlib.style.use('ggplot')
+matplotlib.style.use('bmh')
 
 # commented out by Aaron!
 # import matplotlib.pyplot as plt
@@ -25,14 +24,14 @@ CONSEC = os.environ.get('CONSEC')
 
 class TwitterExample(server.App):
     title = "Sentiment Analysis - Tweets"
-
+    
     inputs = [{     "type":'text',
                     "label": 'twitter handle', 
                     "value":'go_chicken_deli',
                     "key": 'username', 
                     "action_id": "update_data"},
               { "type":'text',
-                    "label": 'number of past tweets',
+                    "label": 'max number of past tweets',
                 "value": 10,
                     "key": 'tweet_number', 
                     "action_id": "update_data"},
@@ -43,18 +42,21 @@ class TwitterExample(server.App):
                     "key": 'retweets', 
                     "action_id": "update_data"}]
 
-    controls = [{   "type" : "hidden",
+    controls = [{   "type" : "button",
+                    "label":"refresh",
+                    "id" : "refresh"},
+                {   "type" : "hidden",
                     "id" : "update_data"}]
 
     tabs = ["Plot", "Table","About"]
 
     outputs = [{ "type" : "plot",
                     "id" : "plot",
-                    "control_id" : "update_data",
+                    "control_id" : "refresh",
                     "tab" : "Plot"},
                 { "type" : "table",
                     "id" : "table_id",
-                    "control_id" : "update_data",
+                    "control_id" : "refresh",
                     "tab" : "Table",
                     "on_page_load" : True },
                { "type" : "html",
@@ -105,20 +107,29 @@ class TwitterExample(server.App):
         self.handle = api.get_user(username).name
         df = pd.DataFrame([date,pol,subj,text]).transpose()
         df.columns = ['Date','polarity','subjectivity','tweet']
-        df = df.reindex(index=df.index[::-1])
         return df
 
     def getPlot(self, params):
-        df = self.getData(params).set_index('Date')
-        plt_obj = df[['polarity','subjectivity']].plot(kind='bar',ylim=(-1.0,1.0))
-        plt_obj.set_ylabel("Sentiment (measured between -1.0 & 1.0)")
-        plt_obj.set_title("{0} Sentiment".format(self.handle),fontname='Helvetica')
+        df = self.getData(params)
+        df = df.reindex(index=df.index[::-1]).set_index('Date')
+        plt_obj = df[['polarity','subjectivity']].plot(kind='bar',ylim=(-1.0,1.0),grid=True,rot=0)
+        plt_obj.set_ylabel("Sentiment")
+        plt_obj.set_title("{0} Sentiment\n(polarity between -1.0 & 1.0, subjectivity between 0 & 1.0)\n".format(self.handle),fontname='Helvetica')
+        plt_obj.tick_params(axis='both', which='major', labelsize=14)
         fig = plt_obj.get_figure()
+        fig.set_size_inches(16.5, 8.5)
         fig.autofmt_xdate()
         return fig
 
     def getHTML(self,params):
-        return "<pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html' target='_blank'>TextBlob</a>.</pre>" 
+        html = '''
+        <style>
+            body {
+                background-image: url("http://www.photos-public-domain.com/wp-content/uploads/2011/09/baby-blue-leather-texture.jpg");
+            }
+        </style>
+        <pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html' target='_blank'>TextBlob</a>.</pre>'''
+        return html
         
 if __name__ == '__main__':
     app = TwitterExample()
