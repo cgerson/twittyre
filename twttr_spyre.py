@@ -34,13 +34,13 @@ class TwitterExample(server.App):
                     "label": 'max number of past tweets',
                 "value": 10,
                     "key": 'tweet_number', 
-                    "action_id": "update_data"},
+                    "action_id": "refresh"},
               { "type":'dropdown',
                 "label":'include retweets',
                     "options" : [{"label": "no", "value":False},
                                  {"label": "yes", "value":True}],
                     "key": 'retweets', 
-                    "action_id": "update_data"}]
+                    "action_id": "refresh"}]
 
     controls = [{   "type" : "button",
                     "label":"refresh",
