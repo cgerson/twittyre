@@ -7,20 +7,11 @@ import os
 import matplotlib
 matplotlib.style.use('bmh')
 
-# commented out by Aaron!
-# import matplotlib.pyplot as plt
-# import json
-# from requests_oauthlib import OAuth1
-
-
 ACCTOK = os.environ.get('ACCTOK')
 ACCTOKSEC = os.environ.get('ACCTOKSEC')
 CONKEY = os.environ.get('CONKEY')
 CONSEC = os.environ.get('CONSEC')
-# ACCTOK = ENV['ACCTOK']
-# ACCTOKSEC = ENV['ACCTOKSEC']
-# CONKEY = ENV['CONKEY']
-# CONSEC = ENV['CONSEC']
+
 
 class TwitterExample(server.App):
     title = "Sentiment Analysis - Tweets"
@@ -48,7 +39,7 @@ class TwitterExample(server.App):
                 {   "type" : "hidden",
                     "id" : "update_data"}]
 
-    tabs = ["Plot", "Table","About"]
+    tabs = ["Plot", "Tweets","About"]
 
     outputs = [{ "type" : "plot",
                     "id" : "plot",
@@ -57,7 +48,7 @@ class TwitterExample(server.App):
                 { "type" : "table",
                     "id" : "table_id",
                     "control_id" : "refresh",
-                    "tab" : "Table",
+                    "tab" : "Tweets",
                     "on_page_load" : True },
                { "type" : "html",
                     "id" : "simple_html_output",
@@ -65,12 +56,15 @@ class TwitterExample(server.App):
                     "tab" : "About"}]
 
     def twitterAPI(self,params):
-        # set up twitter api config to get timeline information
+        ''' set up twitter api config to get timeline information'''
+        
         auth = tweepy.OAuthHandler(CONKEY,CONSEC)
         auth.set_access_token(ACCTOK,ACCTOKSEC)
         return tweepy.API(auth)
         
     def getData(self, params):
+        ''' return table of tweets with associated polarity and subjectivity score '''
+        
         api = self.twitterAPI(params)
         rt = params['retweets']
         username = params['username']
@@ -110,6 +104,8 @@ class TwitterExample(server.App):
         return df
 
     def getPlot(self, params):
+        ''' return matplotlib figure of polarity and subjectivity of tweets in timeline '''
+        
         df = self.getData(params)
         df = df.reindex(index=df.index[::-1]).set_index('Date')
         plt_obj = df[['polarity','subjectivity']].plot(kind='bar',ylim=(-1.0,1.0),grid=True,rot=0)
@@ -122,6 +118,8 @@ class TwitterExample(server.App):
         return fig
 
     def getHTML(self,params):
+        ''' return html for 'About' tab '''
+        
         html = '''
         <style>
             body {
