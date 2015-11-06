@@ -126,7 +126,11 @@ class TwitterExample(server.App):
                 background-image: url("http://www.photos-public-domain.com/wp-content/uploads/2011/09/baby-blue-leather-texture.jpg");
             }
         </style>
-        <pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html' target='_blank'>TextBlob</a>.</pre>'''
+        <br>
+        <pre>Sentiment Analysis by <a href='https://textblob.readthedocs.org/en/dev/index.html' target='_blank'>TextBlob</a>.</pre>
+        <br>
+        <pre>App by <a href = 'https://github.com/cgerson' target='_blank'>Claire Gerson</a>.</pre>
+        '''
         return html
         
 if __name__ == '__main__':
