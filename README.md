@@ -2,6 +2,6 @@
 
 Measure sentiment in tweets for a given Twitter timeline.
 
-Interactive Spyre app allows user to input Twitter handle, and receive polarity and subjectivity scores for each tweet.
+Interactive Spyre app allows user to input Twitter handle, and receive polarity and subjectivity scores for latest n tweets.
 
 App is located at <a href = "http://twittyre.herokuapp.com">twittyre.herokuapp.com</a>.
